@@ -108,18 +108,32 @@ You may find a disk editor handy when manipulating BPB values and/or
 reading/writing boot sectors.
 
 
-Limitations
+Limitations and implementation details
 
-boot12.asm (flp144.asm) was not written for or tested on hard disks.
+boot12.asm (flp144.asm) and boot16.asm require an i80186/i80188/i80286 or a
+better CPU. boot32.asm naturally requires an i80386 or a better CPU.
+
+boot12.asm (flp144.asm) was not tested on hard disks (but it might work as the
+boot sector on FAT12 primary partitions (file system ID 1)).
 
 boot16.asm was written for and tested on primary FAT16 partitions (file system
-IDs 4 and 6). It's expected use is the boot sector of the partition and not the
+IDs 4 and 6). Its expected use is the boot sector of the partition and not the
 MBR. The FAT16 version may allocate up to 128KB of RAM for the entire FAT16,
 leaving less room for STARTUP.BIN. But ~400KB left should still be plenty of
 space for its code, data and stack.
 
 boot32.asm was written for and tested on primary FAT32 partitions (file system
 IDs 0Bh and 0Ch) and for BIOSes supporting function 42h of int 13h (IOW, for
-systems supporting HDDs larger than 8GB). It's expected use is the boot sector
+systems supporting HDDs larger than 8GB). Its expected use is the boot sector
 of the partition and not the MBR.
 
+BootProg does not check the size of STARTUP.BIN and reads into memory all of its
+clusters, which means that up to 32767 extra bytes may be read from the disk
+and written to the memory after the last byte of STARTUP.BIN (max cluster size
+is 32KB). It also means that you may append data to your program and it will be
+loaded. You may create oversized .COM-style STARTUP.BIN larger than ~64KB,
+however, note that the stack will naturally overwrite its contents from offset
+65535 of the program segment (offset 65279 of the file) downwards.
+
+If your PC has the full 640KB of conventional/DOS memory, you should be able to
+load program files of size of up to ~400KB.
