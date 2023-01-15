@@ -1,4 +1,4 @@
-Copyright (c) 2000-2015, Alexey Frunze
+Copyright (c) 2000-2023, Alexey Frunze
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

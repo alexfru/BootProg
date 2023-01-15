@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                          ;;
-;;         "BootProg" Loader v 1.5 by Alexey Frunze (c) 2000-2015           ;;
+;;         "BootProg" Loader v 1.5 by Alexey Frunze (c) 2000-2023           ;;
 ;;                           2-clause BSD license.                          ;;
 ;;                                                                          ;;
 ;;                                                                          ;;
@@ -81,7 +81,6 @@
 
 [BITS 16]
 
-?                       equ     0
 ImageLoadSeg            equ     60h     ; <=07Fh because of "push byte ImageLoadSeg" instructions
 
 [SECTION .text]
@@ -99,27 +98,27 @@ bsOemName               DB      "BootProg"      ; 0x03
 ;; BPB starts here ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-bpbBytesPerSector       DW      ?               ; 0x0B
-bpbSectorsPerCluster    DB      ?               ; 0x0D
-bpbReservedSectors      DW      ?               ; 0x0E
-bpbNumberOfFATs         DB      ?               ; 0x10
-bpbRootEntries          DW      ?               ; 0x11
-bpbTotalSectors         DW      ?               ; 0x13
-bpbMedia                DB      ?               ; 0x15
-bpbSectorsPerFAT        DW      ?               ; 0x16
-bpbSectorsPerTrack      DW      ?               ; 0x18
-bpbHeadsPerCylinder     DW      ?               ; 0x1A
-bpbHiddenSectors        DD      ?               ; 0x1C
-bpbTotalSectorsBig      DD      ?               ; 0x20
+bpbBytesPerSector       DW      0               ; 0x0B
+bpbSectorsPerCluster    DB      0               ; 0x0D
+bpbReservedSectors      DW      0               ; 0x0E
+bpbNumberOfFATs         DB      0               ; 0x10
+bpbRootEntries          DW      0               ; 0x11
+bpbTotalSectors         DW      0               ; 0x13
+bpbMedia                DB      0               ; 0x15
+bpbSectorsPerFAT        DW      0               ; 0x16
+bpbSectorsPerTrack      DW      0               ; 0x18
+bpbHeadsPerCylinder     DW      0               ; 0x1A
+bpbHiddenSectors        DD      0               ; 0x1C
+bpbTotalSectorsBig      DD      0               ; 0x20
 
 ;;;;;;;;;;;;;;;;;;;
 ;; BPB ends here ;;
 ;;;;;;;;;;;;;;;;;;;
 
-bsDriveNumber           DB      ?               ; 0x24
-bsUnused                DB      ?               ; 0x25
-bsExtBootSignature      DB      ?               ; 0x26
-bsSerialNumber          DD      ?               ; 0x27
+bsDriveNumber           DB      0               ; 0x24
+bsUnused                DB      0               ; 0x25
+bsExtBootSignature      DB      0               ; 0x26
+bsSerialNumber          DD      0               ; 0x27
 bsVolumeLabel           DB      "NO NAME    "   ; 0x2B
 bsFileSystem            DB      "FAT16   "      ; 0x36
 

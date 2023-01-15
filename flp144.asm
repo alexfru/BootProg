@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                                          ;;
-;;         "BootProg" Loader v 1.5 by Alexey Frunze (c) 2000-2015           ;;
+;;         "BootProg" Loader v 1.5 by Alexey Frunze (c) 2000-2023           ;;
 ;;                           2-clause BSD license.                          ;;
 ;;                                                                          ;;
 ;;                                                                          ;;
@@ -87,7 +87,6 @@
 
 [BITS 16]
 
-?                       equ     0
 ImageLoadSeg            equ     60h     ; <=07Fh because of "push byte ImageLoadSeg" instructions
 
 [SECTION .text]
