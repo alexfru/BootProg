@@ -94,11 +94,18 @@ out.
 For all other cases you'll need to become a little more familiar with FAT and
 a little more intimate with disk tools and BootProg's source code.
 
-You will need to populate the BPB's of boot16.asm and boot32.asm with the
-values appropriate to the type and size of the file system that you already have
-on a disk or that you intend to create on the disk.
-See the source code, these places are marked with question marks, for example:
-  bpbBytesPerSector       DW      ?               ; 0x0B
+You will need to populate the BPB's of boot12.asm, boot16.asm and boot32.asm
+with the values appropriate to the type and size of the file system that you
+already have on a disk or that you intend to create on the disk.
+See the source code, the BPB variables are located between comments like these:
+  ;;;;;;;;;;;;;;;;;;;;;
+  ;; BPB starts here ;;
+  ;;;;;;;;;;;;;;;;;;;;;
+  ...
+  ;;;;;;;;;;;;;;;;;;;
+  ;; BPB ends here ;;
+  ;;;;;;;;;;;;;;;;;;;
+Note, there are two BPB parts in FAT32.
 
 The best is to format your disk with some standard tools (e.g. FORMAT.COM in
 DOS), extract the BPB values from the FAT-formatted disk, put them into BootProg

@@ -11,7 +11,7 @@
 ;;                                                                          ;;
 ;;                                 Features:                                ;;
 ;;                                 ~~~~~~~~~                                ;;
-;; - FAT16 supported                                                        ;;
+;; - FAT16 supported, to be used on hard drives                             ;;
 ;;                                                                          ;;
 ;; - Loads a 16-bit executable file in the MS-DOS .COM or .EXE format       ;;
 ;;   from the root directory of a disk and transfers control to it          ;;
@@ -178,6 +178,7 @@ main:
 
         mov     ax, [bpbBytesPerSector]
         shr     ax, 4                   ; ax = sector size in paragraphs
+        mov     [ParasPerSector], ax
         mov     cx, [bpbSectorsPerFAT]  ; cx = FAT size in sectors
         mul     cx                      ; ax = FAT size in paragraphs
 
@@ -271,7 +272,7 @@ ReadNextCluster:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reads a FAT16 cluster      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Inout:  ES:BX -> buffer    ;;
+;; Input:  ES:BX -> buffer    ;;
 ;;         SI = cluster no    ;;
 ;; Output: SI = next cluster  ;;
 ;;         ES:BX -> next addr ;;
@@ -292,8 +293,7 @@ ReadCluster:
 
         call    ReadSector
 
-        mov     ax, [bpbBytesPerSector]
-        shr     ax, 4                   ; ax = paragraphs per sector
+        mov     ax, [ParasPerSector]
         mul     cx                      ; ax = paragraphs read
 
         mov     cx, es
@@ -305,7 +305,7 @@ ReadCluster:
         push    ds
         mov     ax, [bp+2*2]            ; ds = FAT segment
         jnc     First64
-        add     ax, 1000h               ; adjust segemnt for 2nd part of FAT16
+        add     ax, 1000h               ; adjust segment for 2nd part of FAT16
 First64:
         mov     ds, ax
         mov     si, [si]                ; si = next cluster
@@ -398,10 +398,10 @@ Run:
 ;; Input:  DX:AX = LBA                    ;;
 ;;         CX    = sector count           ;;
 ;;         ES:BX -> buffer address        ;;
-;; Output: CF = 1 if error                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ReadSector:
+        push    es
         pusha
 
 ReadSectorNext:
@@ -455,13 +455,17 @@ ReadSectorDone:
         dec     cx
         jz      ReadSectorDone2         ; last sector
 
-        add     bx, [bpbBytesPerSector] ; adjust offset for next sector
+        mov     si, es
+        add     si, [ParasPerSector]
+        mov     es, si                  ; es:bx updated
+
         add     ax, 1
         adc     dx, 0                   ; adjust LBA for next sector
         jmp     short ReadSectorNext
 
 ReadSectorDone2:
         popa
+        pop     es
         ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -486,6 +490,9 @@ Error:
         int     16h                     ; wait for a key...
         mov     dl, [bsDriveNumber]     ; restore BIOS boot drive number
         int     19h                     ; bootstrap
+
+
+ParasPerSector  dw      0
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; String constants ;;

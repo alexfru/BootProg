@@ -14,7 +14,7 @@
 ;;                                                                          ;;
 ;;                                 Features:                                ;;
 ;;                                 ~~~~~~~~~                                ;;
-;; - FAT12 supported                                                        ;;
+;; - FAT12 supported, best suited for floppies                              ;;
 ;;                                                                          ;;
 ;; - Loads a 16-bit executable file in the MS-DOS .COM or .EXE format       ;;
 ;;   from the root directory of a disk and transfers control to it          ;;
@@ -277,7 +277,7 @@ ReadNextCluster:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reads a FAT12 cluster      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Inout:  ES:BX -> buffer    ;;
+;; Input:  ES:BX -> buffer    ;;
 ;;         SI = cluster no    ;;
 ;; Output: SI = next cluster  ;;
 ;;         ES:BX -> next addr ;;
@@ -409,7 +409,6 @@ Run:
 ;; Input:  DX:AX = LBA                    ;;
 ;;         CX    = sector count           ;;
 ;;         ES:BX -> buffer address        ;;
-;; Output: CF = 1 if error                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ReadSector:

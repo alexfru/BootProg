@@ -12,7 +12,8 @@
 ;;                                 Features:                                ;;
 ;;                                 ~~~~~~~~~                                ;;
 ;; - FAT32 supported using BIOS int 13h function 42h (IOW, it will only     ;;
-;;   work with modern BIOSes supporting HDDs bigger than 8 GB)              ;;
+;;   work with modern BIOSes supporting HDDs bigger than 8 GB);             ;;
+;;   to be used on hard drives and USB/flash sticks                         ;;
 ;;                                                                          ;;
 ;; - Loads a 16-bit executable file in the MS-DOS .COM or .EXE format       ;;
 ;;   from the root directory of a disk and transfers control to it          ;;
@@ -241,7 +242,7 @@ FindNameNotEnd:
 FindNameFound:
         push    word [es:di+14h]
         push    word [es:di+1Ah]
-        pop     esi                     ; si = cluster no.
+        pop     esi                     ; esi = cluster no.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load the entire file ;;
@@ -251,7 +252,7 @@ FindNameFound:
         pop     es
         xor     bx, bx
 FileReadContinue:
-        call    ReadCluster             ; read one cluster of root dir
+        call    ReadCluster             ; read one cluster of file
         jc      FileReadContinue
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -330,14 +331,15 @@ Run:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         retf
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reads a FAT32 cluster        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Inout:  ES:BX -> buffer      ;;
-;;           ESI = cluster no   ;;
-;; Output:   ESI = next cluster ;;
-;;         ES:BX -> next addr   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Reads a FAT32 cluster         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Input:  ES:BX -> buffer       ;;
+;;           ESI = cluster no    ;;
+;; Output:   ESI = next cluster  ;;
+;;         ES:BX -> next addr    ;;
+;;         CF=0 IFF last cluster ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ReadCluster:
         mov     ax, [bpbBytesPerSector]
@@ -391,7 +393,6 @@ ReadCluster:
 ;; Input:  EAX = LBA                        ;;
 ;;         CX    = sector count             ;;
 ;;         ES:BX -> buffer address          ;;
-;; Output: CF = 1 if error                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ReadSectorLBA:
