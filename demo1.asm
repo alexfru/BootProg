@@ -23,6 +23,7 @@ org 0x100
     jnz     dos ; if no match, it's DOS
 
     ; booted directly from the boot sector
+    ; (DL has the boot drive, e.g. 0, 80h)
     mov si, msghi
     call prints
 halt:
